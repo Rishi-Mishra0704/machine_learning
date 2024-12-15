@@ -1,6 +1,6 @@
 # Machine Learning Projects  
 
-This repository contains a collection of machine learning projects, showcasing solutions for diverse real-world problems. Each project is organized with clear workflows, from data preparation to model deployment.  
+This repository contains a collection of machine learning projects, showcasing solutions for diverse real-world problems. Each project is organized with clear workflows.  
 
 ## 🚀 Features  
 - **End-to-End Workflows**:  
@@ -17,13 +17,12 @@ This repository contains a collection of machine learning projects, showcasing s
 
 ### 1️⃣ Clone the Repository  
 ```bash
-git clone https://github.com/<your-username>/machine-learning.git
+git clone https://github.com/Rishi-Mishra0704/machine_learning
 cd machine-learning
 ```
 
 2️⃣ Set Up a Virtual Environment
 ```bash
-
 python -m venv venv  
 source venv/bin/activate      # On Linux/Mac  
 venv\Scripts\activate         # On Windows  
