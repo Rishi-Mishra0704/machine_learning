@@ -2,71 +2,132 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import LabelEncoder
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+from sklearn.linear_model import Ridge, Lasso
+from sklearn.model_selection import learning_curve
 
 df = pd.read_csv('../data/laptop_price_dataset.csv')
 df.head()
 
-print(df.isnull().sum())
 df = df.dropna()
-df = pd.get_dummies(df, drop_first=True)
 
-X = df.drop('Price (Euro)', axis=1)
-y = df['Price (Euro)']
+# clean the data
+df.columns = df.columns.str.strip()
 
-# Split the data into training (60%) and temporary set (40%)
-train, temp = train_test_split(df, test_size=0.4, random_state=42,)
-# Split the temporary set into validation (50% of temp = 20%) and test (50% of temp = 20%)
-val, test = train_test_split(temp, test_size=0.5, random_state=42,)
+columns_to_drop = ['Company', 'Product', 'TypeName', 'ScreenResolution', 
+                   'CPU_Company', 'GPU_Company', 'OpSys', 'Memory']
 
-# Verify the split, uncomment the following lines
-# print(f"Train set size: {train.shape}")
-# print(f"Validation set size: {val.shape}")
-# print(f"Test set size: {test.shape}")
+# Drop the specified columns
+df_cleaned = df.drop(columns=columns_to_drop)
 
-# Standardize the data, Separating the features from the target
-X_train = train.drop('Price (Euro)', axis=1)
-y_train = train['Price (Euro)']
-X_val = val.drop('Price (Euro)', axis=1)
-y_val = val['Price (Euro)']
-X_test = test.drop('Price (Euro)', axis=1)
-y_test = test['Price (Euro)']
+# Show the resulting DataFrame
+df_cleaned.head()
 
-scaler = StandardScaler()
-X_train_scaled = scaler.fit_transform(X_train)
-X_val_scaled = scaler.transform(X_val)
-X_test_scaled = scaler.transform(X_test)
+X = df_cleaned.drop('Price (Euro)', axis=1)  # Features
+y = df_cleaned['Price (Euro)'] 
 
-LinearRegressionModel = LinearRegression()
-LinearRegressionModel.fit(X_train_scaled, y_train)
-#check the model score
-# print(f"Model coefficients: {LinearRegressionModel.coef_}")
-# print(f"Intercept: {LinearRegressionModel.intercept_}")
+label_encoder = LabelEncoder()
 
-# Make predictions
-y_pred_train = LinearRegressionModel.predict(X_train_scaled)
-y_pred_val = LinearRegressionModel.predict(X_val_scaled)
-y_pred_test = LinearRegressionModel.predict(X_test_scaled)
+X["CPU_Type"] = label_encoder.fit_transform(X["CPU_Type"])
+X["GPU_Type"] = label_encoder.fit_transform(X["GPU_Type"])
 
-# Print a few predictions to check
-print(f"Predictions on the training set: {y_pred_train[:5]}")
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Evaluate on the training set
-mae_train = mean_absolute_error(y_train, y_pred_train)
-mse_train = mean_squared_error(y_train, y_pred_train)
-r2_train = r2_score(y_train, y_pred_train)
-# Evaluate on the validation set
-mae_val = mean_absolute_error(y_val, y_pred_val)
-mse_val = mean_squared_error(y_val, y_pred_val)
-r2_val = r2_score(y_val, y_pred_val)
-# Evaluate on the test set
-mae_test = mean_absolute_error(y_test, y_pred_test)
-mse_test = mean_squared_error(y_test, y_pred_test)
-r2_test = r2_score(y_test, y_pred_test)
+# Train Linear Regression model
 
-print(f"Train MAE: {mae_train}, MSE: {mse_train}, R²: {r2_train}")
-print(f"Validation MAE: {mae_val}, MSE: {mse_val}, R²: {r2_val}")
-print(f"Test MAE: {mae_test}, MSE: {mse_test}, R²: {r2_test}")
+linear_regression = LinearRegression()
+linear_regression.fit(X_train, y_train)
+
+# Predict the test set
+y_pred = linear_regression.predict(X_test)
+
+# Evaluate the model
+mae = mean_absolute_error(y_test, y_pred)
+mse = mean_squared_error(y_test, y_pred)
+r2 = r2_score(y_test, y_pred)
+
+print(f"Mean Absolute Error: {mae} in Linear Regression")
+print(f"Mean Squared Error: {mse} in Linear Regression")
+print(f"R-squared: {r2} in Linear Regression")
+
+# Learning Curve
+train_sizes, train_scores, validation_scores = learning_curve(linear_regression, X_train, y_train, cv=5)
+
+# Plotting
+plt.figure()
+plt.plot(train_sizes, train_scores.mean(axis=1), label='Training error')
+plt.plot(train_sizes, validation_scores.mean(axis=1), label='Validation error')
+plt.xlabel('Training size')
+plt.ylabel('Error')
+plt.title('Learning Curve')
+plt.legend()
+plt.show()
+
+#Residual Plot
+
+y_pred = linear_regression.predict(X_test)
+
+# Plotting residuals
+residuals = y_test - y_pred
+
+plt.scatter(y_pred, residuals)
+plt.axhline(y=0, color='r', linestyle='--')  # Line at 0 residuals
+plt.xlabel('Predicted Values')
+plt.ylabel('Residuals')
+plt.title('Residuals Plot')
+plt.show()
+
+print(residuals)
+
+# Actual vs Predicted
+
+plt.scatter(y_test, y_pred)
+plt.plot([min(y_test), max(y_test)], [min(y_test), max(y_test)], color='red')  # Ideal line
+plt.xlabel('Actual')
+plt.ylabel('Predicted')
+plt.title('Actual vs Predicted')
+plt.show()
+print("y_test" , y_test)
+print("y_pred" , y_pred)
+
+# Regularization using Ridge
+
+# Create the Ridge model with a regularization parameter alpha (lambda)
+ridge_model = Ridge(alpha=1.0)  # alpha is the regularization parameter (lambda)
+
+# Fit the model on the training data
+ridge_model.fit(X_train, y_train)
+
+# Predict on the test data
+y_pred_ridge = ridge_model.predict(X_test)
+
+# Evaluate the model
+mae_ridge = mean_absolute_error(y_test, y_pred_ridge)
+mse_ridge = mean_squared_error(y_test, y_pred_ridge)
+r2_ridge = r2_score(y_test, y_pred_ridge)
+
+print(f"Ridge Regression - MAE: {mae_ridge:.2f}, MSE: {mse_ridge:.2f}, R-squared: {r2_ridge:.2f}")
+
+
+# Regularization using Lasso
+
+# Create the Lasso model with a regularization parameter alpha (lambda)
+lasso_model = Lasso(alpha=0.1)  # alpha is the regularization parameter (lambda)
+
+# Fit the model on the training data
+lasso_model.fit(X_train, y_train)
+
+# Predict on the test data
+y_pred_lasso = lasso_model.predict(X_test)
+
+# Evaluate the model
+mae_lasso = mean_absolute_error(y_test, y_pred_lasso)
+mse_lasso = mean_squared_error(y_test, y_pred_lasso)
+r2_lasso = r2_score(y_test, y_pred_lasso)
+
+print(f"Lasso Regression - MAE: {mae_lasso:.2f}, MSE: {mse_lasso:.2f}, R-squared: {r2_lasso:.2f}")
+
+
 

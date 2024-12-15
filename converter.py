@@ -6,6 +6,12 @@ import nbformat
 notebook_dir = 'notebook'
 script_dir = 'script'
 
+# Function to create directories if they don't exist
+def create_dirs():
+    # Ensure that both notebook and script directories exist
+    os.makedirs(notebook_dir, exist_ok=True)
+    os.makedirs(script_dir, exist_ok=True)
+
 # Function to convert .ipynb to .py
 def convert_ipynb_to_py(ipynb_file):
     input_path = os.path.join(notebook_dir, ipynb_file)
@@ -15,11 +21,14 @@ def convert_ipynb_to_py(ipynb_file):
     with open(input_path, 'r', encoding='utf-8') as f:
         notebook = nbformat.read(f, as_version=4)
 
-    # Extract code cells and write to .py file
+    # Extract code cells and markdown cells, write to .py file
     with open(output_file, 'w', encoding='utf-8') as py_file:
         for cell in notebook.cells:
             if cell.cell_type == 'code':
                 py_file.write(cell.source + '\n\n')
+            elif cell.cell_type == 'markdown':
+                # Convert markdown cells into Python comments
+                py_file.write(f"# {cell.source.replace('\n', '\n# ')}\n\n")
 
     print(f"Converted {ipynb_file} to {output_file}")
 
@@ -48,8 +57,7 @@ def convert_py_to_ipynb(py_file):
 
 # Function to handle the conversion process
 def convert_files(to_format):
-    # Make sure script directory exists
-    os.makedirs(script_dir, exist_ok=True)
+    create_dirs()  # Create necessary directories before conversion
 
     if to_format == 'py':
         # Convert all .ipynb files in the notebook directory to .py files in the script directory
