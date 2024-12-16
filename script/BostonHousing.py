@@ -10,7 +10,7 @@ from sklearn.model_selection import cross_val_score
 from sklearn.pipeline import make_pipeline
 
 
-df = pd.read_csv('../data/BostonHousing.csv')
+df = pd.read_csv('data/BostonHousing.csv')
 df.head()
 
 #cleaning data

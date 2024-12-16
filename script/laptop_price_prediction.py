@@ -8,7 +8,7 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.linear_model import Ridge, Lasso
 from sklearn.model_selection import learning_curve
 
-df = pd.read_csv('../data/laptop_price_dataset.csv')
+df = pd.read_csv('data/laptop_price_dataset.csv')
 df.head()
 
 df = df.dropna()
@@ -65,7 +65,7 @@ plt.title('Learning Curve')
 plt.legend()
 plt.show()
 
-#Residual Plot
+# Residual Plot
 
 y_pred = linear_regression.predict(X_test)
 
@@ -132,8 +132,6 @@ alpha_values = [1, 10, 20, 50]
 # Initialize lists to store evaluation metrics for each alpha
 results = []
 # Create the Lasso model with a regularization parameter alpha (lambda)
-lasso_model = Lasso(alpha=0.1)  # alpha is the regularization parameter (lambda)
-
 for alpha in alpha_values:
     # Create Ridge model with the current alpha
     lasso_model = Lasso(alpha=alpha)
@@ -141,7 +139,7 @@ for alpha in alpha_values:
     # Fit the model on the training data
     lasso_model.fit(X_train, y_train)
 
-# Predict on the test data
+    # Predict on the test data
     y_pred_lasso = lasso_model.predict(X_test)
 
     # Evaluate the model
@@ -160,7 +158,3 @@ for alpha in alpha_values:
 # Print results for each alpha
 for res in results:
     print(f"Alpha: {res['Alpha']}, MAE: {res['MAE']:.2f}, MSE: {res['MSE']:.2f}, R-squared: {res['R2']:.2f} for Lasso")
-
-
-
-

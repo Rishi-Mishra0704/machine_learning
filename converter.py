@@ -1,6 +1,6 @@
 import os
 import argparse
-import nbformat
+import jupytext
 
 # Define directories
 notebook_dir = 'notebook'
@@ -12,48 +12,28 @@ def create_dirs():
     os.makedirs(notebook_dir, exist_ok=True)
     os.makedirs(script_dir, exist_ok=True)
 
-# Function to convert .ipynb to .py
+# Function to convert .ipynb to .py using jupytext
 def convert_ipynb_to_py(ipynb_file):
     input_path = os.path.join(notebook_dir, ipynb_file)
     output_file = os.path.join(script_dir, f"{os.path.splitext(ipynb_file)[0]}.py")
-
-    # Read the notebook file
-    with open(input_path, 'r', encoding='utf-8') as f:
-        notebook = nbformat.read(f, as_version=4)
-
-    # Extract code cells and markdown cells, write to .py file
-    with open(output_file, 'w', encoding='utf-8') as py_file:
-        for cell in notebook.cells:
-            if cell.cell_type == 'code':
-                py_file.write(cell.source + '\n\n')
-            elif cell.cell_type == 'markdown':
-                # Convert markdown cells into Python comments
-                py_file.write(f"# {cell.source.replace('\n', '\n# ')}\n\n")
+    
+    # Load the notebook and save it as a Python script using jupytext
+    notebook = jupytext.read(input_path)
+    jupytext.write(notebook, output_file)
 
     print(f"Converted {ipynb_file} to {output_file}")
 
-# Function to convert .py to .ipynb (splitting code into multiple cells)
+# Function to convert .py to .ipynb using jupytext (splitting code into multiple cells)
 def convert_py_to_ipynb(py_file):
     input_path = os.path.join(script_dir, py_file)
     output_file = os.path.join(notebook_dir, f"{os.path.splitext(py_file)[0]}.ipynb")
 
-    # Read the Python file
-    with open(input_path, 'r', encoding='utf-8') as f:
-        py_code = f.read()
-
-    # Split the Python code into multiple blocks (here assuming `# %%` is the cell delimiter)
-    code_blocks = py_code.split('\n\n')  # Adjust based on your code structure, e.g., using comments or `# %%`
-
-    # Create a new notebook and add code cells
-    notebook = nbformat.v4.new_notebook()
-    for block in code_blocks:
-        notebook.cells.append(nbformat.v4.new_code_cell(block))
-
-    # Write to the .ipynb file
-    with open(output_file, 'w', encoding='utf-8') as f:
-        nbformat.write(notebook, f)
+    # Load the Python script and save it as a Jupyter notebook using jupytext
+    script = jupytext.read(input_path)
+    jupytext.write(script, output_file)
 
     print(f"Converted {py_file} to {output_file}")
+
 
 # Function to handle the conversion process
 def convert_files(to_format):
