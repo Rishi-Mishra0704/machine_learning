@@ -82,7 +82,6 @@ plt.show()
 print(residuals)
 
 # Actual vs Predicted
-
 plt.scatter(y_test, y_pred)
 plt.plot([min(y_test), max(y_test)], [min(y_test), max(y_test)], color='red')  # Ideal line
 plt.xlabel('Actual')
@@ -92,42 +91,76 @@ plt.show()
 print("y_test" , y_test)
 print("y_pred" , y_pred)
 
-# Regularization using Ridge
+# Define a range of alpha values to test
+alpha_values = [1, 10, 20, 50]
 
-# Create the Ridge model with a regularization parameter alpha (lambda)
-ridge_model = Ridge(alpha=1.0)  # alpha is the regularization parameter (lambda)
+# Initialize lists to store evaluation metrics for each alpha
+results = []
 
-# Fit the model on the training data
-ridge_model.fit(X_train, y_train)
+# Loop through alpha values and evaluate the Ridge model
+for alpha in alpha_values:
+    # Create Ridge model with the current alpha
+    ridge_model = Ridge(alpha=alpha)
+    
+    # Fit the model on the training data
+    ridge_model.fit(X_train, y_train)
+    
+    # Predict on the test data
+    y_pred_ridge = ridge_model.predict(X_test)
+    
+    # Evaluate the model
+    mae_ridge = mean_absolute_error(y_test, y_pred_ridge)
+    mse_ridge = mean_squared_error(y_test, y_pred_ridge)
+    r2_ridge = r2_score(y_test, y_pred_ridge)
+    
+    # Append the results
+    results.append({
+        "Alpha": alpha,
+        "MAE": mae_ridge,
+        "MSE": mse_ridge,
+        "R2": r2_ridge
+    })
 
-# Predict on the test data
-y_pred_ridge = ridge_model.predict(X_test)
-
-# Evaluate the model
-mae_ridge = mean_absolute_error(y_test, y_pred_ridge)
-mse_ridge = mean_squared_error(y_test, y_pred_ridge)
-r2_ridge = r2_score(y_test, y_pred_ridge)
-
-print(f"Ridge Regression - MAE: {mae_ridge:.2f}, MSE: {mse_ridge:.2f}, R-squared: {r2_ridge:.2f}")
+# Print results for each alpha
+for res in results:
+    print(f"Alpha: {res['Alpha']}, MAE: {res['MAE']:.2f}, MSE: {res['MSE']:.2f}, R-squared: {res['R2']:.2f} in Ridge Regression")
 
 
 # Regularization using Lasso
+alpha_values = [1, 10, 20, 50]
 
+# Initialize lists to store evaluation metrics for each alpha
+results = []
 # Create the Lasso model with a regularization parameter alpha (lambda)
 lasso_model = Lasso(alpha=0.1)  # alpha is the regularization parameter (lambda)
 
-# Fit the model on the training data
-lasso_model.fit(X_train, y_train)
+for alpha in alpha_values:
+    # Create Ridge model with the current alpha
+    lasso_model = Lasso(alpha=alpha)
+    
+    # Fit the model on the training data
+    lasso_model.fit(X_train, y_train)
 
 # Predict on the test data
-y_pred_lasso = lasso_model.predict(X_test)
+    y_pred_lasso = lasso_model.predict(X_test)
 
-# Evaluate the model
-mae_lasso = mean_absolute_error(y_test, y_pred_lasso)
-mse_lasso = mean_squared_error(y_test, y_pred_lasso)
-r2_lasso = r2_score(y_test, y_pred_lasso)
+    # Evaluate the model
+    mae_lasso = mean_absolute_error(y_test, y_pred_lasso)
+    mse_lasso = mean_squared_error(y_test, y_pred_lasso)
+    r2_lasso = r2_score(y_test, y_pred_lasso)
+        
+        # Append the results
+    results.append({
+            "Alpha": alpha,
+            "MAE": mae_lasso,
+            "MSE": mse_lasso,
+            "R2": r2_lasso
+        })
 
-print(f"Lasso Regression - MAE: {mae_lasso:.2f}, MSE: {mse_lasso:.2f}, R-squared: {r2_lasso:.2f}")
+# Print results for each alpha
+for res in results:
+    print(f"Alpha: {res['Alpha']}, MAE: {res['MAE']:.2f}, MSE: {res['MSE']:.2f}, R-squared: {res['R2']:.2f} for Lasso")
+
 
 
 
