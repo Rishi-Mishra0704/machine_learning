@@ -8,7 +8,7 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.linear_model import Ridge, Lasso
 from sklearn.model_selection import learning_curve
 
-df = pd.read_csv('data/laptop_price_dataset.csv')
+df = pd.read_csv('../data/laptop_price_dataset.csv')
 df.head()
 
 df = df.dropna()
@@ -79,8 +79,6 @@ plt.ylabel('Residuals')
 plt.title('Residuals Plot')
 plt.show()
 
-print(residuals)
-
 # Actual vs Predicted
 plt.scatter(y_test, y_pred)
 plt.plot([min(y_test), max(y_test)], [min(y_test), max(y_test)], color='red')  # Ideal line
@@ -88,8 +86,6 @@ plt.xlabel('Actual')
 plt.ylabel('Predicted')
 plt.title('Actual vs Predicted')
 plt.show()
-print("y_test" , y_test)
-print("y_pred" , y_pred)
 
 # Define a range of alpha values to test
 alpha_values = [1, 10, 20, 50]
@@ -158,3 +154,23 @@ for alpha in alpha_values:
 # Print results for each alpha
 for res in results:
     print(f"Alpha: {res['Alpha']}, MAE: {res['MAE']:.2f}, MSE: {res['MSE']:.2f}, R-squared: {res['R2']:.2f} for Lasso")
+
+# +
+test_data = pd.DataFrame({
+    "Inches": [15.6, 14.0, 17.3, 13.3],
+    "CPU_Type": [1, 2, 0, 3],
+    "CPU_Frequency (GHz)": [2.5, 3.1, 2.9, 3.8],
+    "RAM (GB)": [8, 16, 32, 4],
+    "GPU_Type": [2, 1, 0, 3],
+    "Weight (kg)": [2.1, 1.5, 3.2, 1.2],
+})
+
+
+# Perform predictions
+predicted_prices = linear_regression.predict(test_data)
+
+# Show results
+print("Test Data:")
+print(test_data)
+print("\nPredicted Prices:")
+print(predicted_prices)
