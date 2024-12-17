@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -10,8 +11,16 @@ from sklearn.model_selection import cross_val_score
 from sklearn.pipeline import make_pipeline
 
 
-df = pd.read_csv('../data/BostonHousing.csv')
+# +
+working_dir = os.getcwd()
+
+# Construct the path to the CSV file relative to the working directory
+csv_path = os.path.join(working_dir, "..", 'data', 'BostonHousing.csv')
+
+# Load the CSV file
+df = pd.read_csv(csv_path)
 df.head()
+# -
 
 #cleaning data
 df_cleaned = df.dropna()
