@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -8,8 +9,13 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.linear_model import Ridge, Lasso
 from sklearn.model_selection import learning_curve
 
-df = pd.read_csv('../data/laptop_price_dataset.csv')
+
+working_dir = os.getcwd()
+
+csv_path = os.path.join(working_dir,"..","data", 'laptop_price_dataset.csv')
+df = pd.read_csv(csv_path)
 df.head()
+
 
 df = df.dropna()
 
