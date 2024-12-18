@@ -32,15 +32,12 @@ df_cleaned = df.drop(columns=columns_to_drop)
 # Show the resulting DataFrame
 df_cleaned.head()
 
-X = df_cleaned.drop('Price (Euro)', axis=1)  # Features
-y = df_cleaned['Price (Euro)'] 
+X = df_cleaned[[
+    "Inches", "CPU_Frequency (GHz)", "RAM (GB)", "Weight (kg)",
+]]
+y = df_cleaned['Price (Euro)']
 
-label_encoder = LabelEncoder()
-
-X["CPU_Type"] = label_encoder.fit_transform(X["CPU_Type"])
-X["GPU_Type"] = label_encoder.fit_transform(X["GPU_Type"])
-
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
 # Train Linear Regression model
 
@@ -165,10 +162,8 @@ for res in results:
 # +
 test_data = pd.DataFrame({
     "Inches": [15.6, 14.0, 17.3, 13.3],
-    "CPU_Type": [1, 2, 0, 3],
     "CPU_Frequency (GHz)": [2.5, 3.1, 2.9, 3.8],
     "RAM (GB)": [8, 16, 32, 4],
-    "GPU_Type": [2, 1, 0, 3],
     "Weight (kg)": [2.1, 1.5, 3.2, 1.2],
 })
 
