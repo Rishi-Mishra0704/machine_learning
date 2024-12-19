@@ -53,7 +53,7 @@ df_feat.head()
 
 X = df_feat
 y = df["TARGET CLASS"]
-X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.3,random_state=101)
+X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.33,random_state=101)
 
 knn = KNeighborsClassifier()
 
