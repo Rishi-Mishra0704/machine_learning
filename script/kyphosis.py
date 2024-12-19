@@ -35,8 +35,29 @@ working_dir = os.getcwd()
 csv_path = os.path.join(working_dir, "..", 'data', 'kyphosis.csv')
 
 # Load the CSV file
-df = pd.read_csv(csv_path,index_col=0)
+df = pd.read_csv(csv_path)
 df.head()
 # -
 
 sns.pairplot(df,hue="Kyphosis")
+
+
+X = df.drop("Kyphosis",axis=1)
+y = df["Kyphosis"]
+X_train, X_test, y_train, y_test = train_test_split(X,y,test_size=0.3)
+
+dtree = DecisionTreeClassifier()
+dtree.fit(X_train,y_train)
+
+preds = dtree.predict(X_test)
+
+print(classification_report(y_test,preds))
+print(confusion_matrix(y_test,preds))
+
+rforest = RandomForestClassifier(n_estimators=200)
+rforest.fit(X_train,y_train)
+
+rtree_pred = rforest.predict(X_test)
+
+print(classification_report(y_test,rtree_pred))
+print(confusion_matrix(y_test,rtree_pred))
