@@ -69,4 +69,11 @@ preds = svc.predict(X_test)
 print(classification_report(y_test,preds))
 print(confusion_matrix(y_test,preds))
 
-grid = GridSearchCV()
+param_grid = {"C": [0.1,1,10,100], "gamma":[1,0.1,0.001,0.0001]}
+
+grid = GridSearchCV(SVC(),param_grid, verbose=2)
+grid.fit(X_train,y_train)
+
+grid_preds = grid.predict(X_test)
+print(classification_report(y_test,grid_preds))
+print(confusion_matrix(y_test,grid_preds))
