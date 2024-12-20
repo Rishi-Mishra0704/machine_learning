@@ -188,8 +188,6 @@ print(confusion_matrix(y_test,rfc_preds))
 
 # **What performed better the random forest or the decision tree?**
 
-#
-
 # Random Forest Performed slightly better than Decision Tree in some cases however the decision tree performed better in some cases like recall.Please refer the classification report for more details.
 
 # # Great Job!
