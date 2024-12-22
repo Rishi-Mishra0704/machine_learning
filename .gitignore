@@ -1,2 +1,14 @@
-.venv
-notebook
+# Virtual environment
+.venv/
+
+# Jupyter Notebook Checkpoints
+.ipynb_checkpoints/
+
+# Ignore HDF5 model files
+*.h5
+
+# Ignore notebook folder (if it's a folder)
+notebook/
+
+# Ignore specific notebook files (if needed)
+*.ipynb
