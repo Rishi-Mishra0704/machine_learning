@@ -102,7 +102,7 @@ df = df.drop("zipcode",axis=1)
 df.head()
 
 X = df.drop("price",axis=1).values
-y = df["price"].values
+y = df["price"]. values
 X_train,X_test,y_train,y_test = train_test_split(X,y,test_size=0.3,random_state=101)
 
 scaler = MinMaxScaler()
@@ -119,7 +119,7 @@ model.add(Dense(19,activation="relu"))
 model.add(Dense(19,activation="relu"))
 
 model.add(Dense(1))
-model.compile(optimizer="adam",loss="mse")
+model.compile(optimizer="adam",loss=MeanSquaredError())
 # -
 
 model.fit(x=X_train,y=y_train,validation_data=(X_test,y_test),batch_size=128,epochs=400,verbose=2)
