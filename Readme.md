@@ -18,7 +18,7 @@ This repository contains a collection of machine learning projects, showcasing s
 ### 1️⃣ Clone the Repository  
 ```bash
 git clone https://github.com/Rishi-Mishra0704/machine_learning
-cd machine-learning
+cd machine_learning
 ```
 
 2️⃣ Set Up a Virtual Environment
